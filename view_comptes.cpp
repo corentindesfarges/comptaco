@@ -260,6 +260,8 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
         list_type->addItem("CB");
         list_type->addItem("Chèque");
         list_type->addItem("Espèce");
+        list_type->addItem("Virement");
+        list_type->addItem("Autre");
 
         QPushButton *del = new QPushButton("X");
         del->setMaximumWidth(30);
@@ -298,6 +300,10 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
             idxType = 1;
         else if(operation.getTypePmt()=="Espèce")
             idxType = 2;
+        else if(operation.getTypePmt()=="Virement")
+            idxType = 3;
+        else if(operation.getTypePmt()=="Autre")
+            idxType = 4;
 
         ui->tableWidget->setItem(no_line,0,new QTableWidgetItem(QString::number(operation.getId())));
         ui->tableWidget->setItem(no_line,1,new QTableWidgetItem(operation.getDate().toString("dd/MM/yyyy")));
@@ -366,10 +372,14 @@ void view_Comptes::load_options()
     ui->list_pmt->addItem("CB");
     ui->list_pmt->addItem("Chèque");
     ui->list_pmt->addItem("Espèce");
+    ui->list_pmt->addItem("Virement");
+    ui->list_pmt->addItem("Autre");
 
     ui->list_pmt_2->addItem("CB");
     ui->list_pmt_2->addItem("Chèque");
     ui->list_pmt_2->addItem("Espèce");
+    ui->list_pmt_2->addItem("Virement");
+    ui->list_pmt_2->addItem("Autre");
 
     vector<Categorie> categories = dao.getAllCategories();
     for(int i=0;i<categories.size();i++){
@@ -410,20 +420,15 @@ void view_Comptes::on_btn_add_clicked()
     reste += ui->edit_value->text().toDouble();
     QDate date = QDate::fromString(ui->edit_date->text().toStdString().c_str(),"dd/MM/yyyy");
 
-    if(!Utilities::checkIsValue(ui->edit_value->text().toStdString())){
+    if(!Utilities::checkIsValue(ui->edit_value->text().toStdString()))
+    {
         ui->edit_value->setStyleSheet("#edit_value{border:2px solid red;}");
         return;
-    } else {
+    }
+    else
+    {
         ui->edit_value->setStyleSheet("");
     }
-
-    if(ui->edit_desc->text().toStdString()==""){
-        ui->edit_desc->setStyleSheet("#edit_desc{border:2px solid red;}");
-        return;
-    } else {
-        ui->edit_desc->setStyleSheet("");
-    }
-
 
     dao.insertOperation(date.toString("yyyy-MM-dd").toStdString(),
                ui->edit_value->text().toStdString(),

@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="wp1n">rc/images/wp1.png</file>
+        <file alias="wp2n">rc/images/wp2.png</file>
+        <file alias="wp1b">rc/images/wp1b.png</file>
+        <file alias="wp1c">rc/images/wp1c.png</file>
+        <file alias="wp2b">rc/images/wp2b.png</file>
+        <file alias="wp2c">rc/images/wp2c.png</file>
+        <file alias="bb">rc/images/btn_b.png</file>
+        <file alias="bc">rc/images/btn_c.png</file>
+        <file alias="bn">rc/images/btn_n.png</file>
+        <file alias="schema">rc/schema.sql</file>
+    </qresource>
+</RCC>

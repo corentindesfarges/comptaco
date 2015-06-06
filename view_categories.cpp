@@ -81,16 +81,16 @@ void view_Categories::remplirTableau(vector<Categorie> categories)
 
     ui->tableWidget->verticalHeader()->hide();
 
-    ui->tableWidget->setRowCount(categories.size());
+    ui->tableWidget->setRowCount(categories.size()-1);
     for(int i=0;i<categories.size();i++){
         if(categories[i].getId()!=-1){
             QPushButton *del = new QPushButton("X");
             del->setObjectName(QString::number(categories[i].getId()));
             connect(del, SIGNAL(clicked()), this, SLOT( clicked_del()));
 
-            ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(categories[i].getId())));
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(categories[i].getNom())));
-            ui->tableWidget->setCellWidget(i,2,del);
+            ui->tableWidget->setItem(i-1,0,new QTableWidgetItem(QString::number(categories[i].getId())));
+            ui->tableWidget->setItem(i-1,1,new QTableWidgetItem(QString::fromStdString(categories[i].getNom())));
+            ui->tableWidget->setCellWidget(i-1,2,del);
         }
 
     }

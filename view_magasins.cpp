@@ -86,16 +86,16 @@ void view_Magasins::remplirTableau(vector<Magasin> magasins)
 
     ui->tableWidget->verticalHeader()->hide();
 
-    ui->tableWidget->setRowCount(magasins.size());
+    ui->tableWidget->setRowCount(magasins.size()-1);
     for(int i=0;i<magasins.size();i++){
         if(magasins[i].getId()!=-1){
             QPushButton *del = new QPushButton("X");
             del->setObjectName(QString::number(magasins[i].getId()));
             connect(del, SIGNAL(clicked()), this, SLOT( clicked_del()));
 
-            ui->tableWidget->setItem(i,0,new QTableWidgetItem(QString::number(magasins[i].getId())));
-            ui->tableWidget->setItem(i,1,new QTableWidgetItem(QString::fromStdString(magasins[i].getNom())));
-            ui->tableWidget->setCellWidget(i,2,del);
+            ui->tableWidget->setItem(i-1,0,new QTableWidgetItem(QString::number(magasins[i].getId())));
+            ui->tableWidget->setItem(i-1,1,new QTableWidgetItem(QString::fromStdString(magasins[i].getNom())));
+            ui->tableWidget->setCellWidget(i-1,2,del);
         }
     }
 }

@@ -69,5 +69,5 @@ bool Utilities::checkIsValue(string val)
 void Utilities::setTheme(QMainWindow *window, QString no)
 {
     QSettings settings("Dev", "ComptaCool");
-    window->setStyleSheet("#centralWidget{background-image: url(:wp"+no+settings.value("theme").toString()+")}");
+    window->setStyleSheet("#centralWidget{background-image: url(:wp"+no+settings.value("theme","c").toString()+")}");
 }

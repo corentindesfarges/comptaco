@@ -31,12 +31,12 @@ void DAO::loadSchema()
     string create_script =
         "CREATE TABLE IF NOT EXISTS MAGASIN (                       \
             IDMAG INTEGER PRIMARY KEY NOT NULL,                     \
-            NOMMAG VARCHAR NOT NULL                                 \
+            NOMMAG VARCHAR                                          \
         );                                                          \
                                                                     \
         CREATE TABLE IF NOT EXISTS CATEGORIE (                      \
             IDCAT INTEGER PRIMARY KEY NOT NULL,                     \
-            NOMCAT VARCHAR NOT NULL                                 \
+            NOMCAT VARCHAR                                          \
         );                                                          \
                                                                     \
         CREATE TABLE IF NOT EXISTS OPERATION (                      \
@@ -51,7 +51,10 @@ void DAO::loadSchema()
             RESTE DOUBLE,                                           \
             FOREIGN KEY (MAG) REFERENCES MAGASIN(IDMAG),            \
             FOREIGN KEY (CAT) REFERENCES CATEGORIE(IDCAT)           \
-        );";
+        );                                                          \
+                                                                    \
+        INSERT INTO MAGASIN (IDMAG, NOMMAG) VALUES (-1,\"\");       \
+        INSERT INTO CATEGORIE (IDCAT, NOMCAT) VALUES (-1,\"\");     ";
 
     this->open();
     this->execute(create_script);

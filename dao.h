@@ -47,6 +47,7 @@ public:
     vector<Magasin> getAllMagasins();
 
     double getReste();
+    string orderBy(string col);
 
     void removeOperation(string id);
     void removeMagasin(string id);

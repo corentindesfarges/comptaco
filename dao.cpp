@@ -4,6 +4,8 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <QSettings>
+
 #include "dao.h"
 
 DAO::DAO()
@@ -118,6 +120,13 @@ double DAO::getReste(){
     return reste;
 }
 
+string DAO::orderBy(string col)
+{
+    string sort = " ORDER BY " + col + " ";
+    QSettings settings("Dev", "ComptaCool");
+    return sort + ((settings.value("sort_chrono",false)==true) ? "ASC" : "DESC");
+}
+
 /*############################ SELECT ############################*/
 
 Categorie DAO::getCategorie(string knewColName, string knewValue)
@@ -194,7 +203,7 @@ vector<Operation> DAO::getOperationsSelected(QDate d1, QDate d2, string nomMag, 
     if(typePmt=="")
         typePmt="%%";
 
-    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE NOMMAG LIKE '"+nomMag+"' AND NOMCAT LIKE '"+nomCat.c_str()+"' AND TYPE LIKE '"+typePmt+"' AND DATEOP BETWEEN ('"+d1.toString("yyyy-MM-dd").toStdString()+"') AND ('"+d2.toString("yyyy-MM-dd").toStdString()+"') ORDER BY IDOP DESC;";
+    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE NOMMAG LIKE '"+nomMag+"' AND NOMCAT LIKE '"+nomCat.c_str()+"' AND TYPE LIKE '"+typePmt+"' AND DATEOP BETWEEN ('"+d1.toString("yyyy-MM-dd").toStdString()+"') AND ('"+d2.toString("yyyy-MM-dd").toStdString()+"')"+orderBy("IDOP")+";";
     this->execute(rq.c_str());
 
     for(int i = 0 ; i < callback_v.size();){
@@ -222,7 +231,7 @@ Operation DAO::getOperation(string knewColName, string knewValue)
 {
     this->open();
 
-    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE "+knewColName+" LIKE '"+knewValue+"';";
+    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE "+knewColName+" LIKE '"+knewValue+"'"+orderBy("IDOP")+";";
     this->execute(rq);
 
     Operation operation;
@@ -287,7 +296,7 @@ vector<Operation> DAO::getAllOperations()
 {
     this->open();
     vector<Operation > result;
-    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT ORDER BY IDOP DESC;";
+    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT"+orderBy("IDOP")+";";
     std::cout << rq << std::endl;
 
     this->execute(rq);

@@ -8,7 +8,7 @@ QT       += core gui
 QT       += widgets
 QT       += printsupport
 
-TARGET = ComptaCool
+TARGET = ComptaCo
 TEMPLATE = app
 
 CONFIG += c++11

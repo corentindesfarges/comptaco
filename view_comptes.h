@@ -77,6 +77,8 @@ private slots:
 
     void resizeEvent( QResizeEvent *e );
 
+    void on_check_sort_clicked(bool checked);
+
 private:
     Ui::view_Comptes *ui;
     DAO dao;

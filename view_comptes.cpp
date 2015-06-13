@@ -10,6 +10,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 #include <QWidget>
+#include <QSettings>
 #include <vector>
 
 #include "qselect.h"
@@ -672,6 +673,18 @@ void view_Comptes::on_check_afficher_tout_toggled(bool checked)
     ui->rad_mois->setEnabled(!checked);
 
     if(checked)
+        update();
+    else
+        update(loadSearch());
+}
+
+
+void view_Comptes::on_check_sort_clicked(bool checked)
+{
+    QSettings settings("Dev", "ComptaCool");
+    settings.setValue("sort_chrono",checked);
+
+    if(ui->check_afficher_tout->isChecked())
         update();
     else
         update(loadSearch());

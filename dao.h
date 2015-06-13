@@ -55,8 +55,8 @@ public:
 
     void insertOperation(string date, string value, string typePmt, string description,
                          string reference, string magasin, string categorie, string reste);
-    void insertMagasin(string id);
-    void insertCategorie(string id);
+    void insertMagasin(string nom);
+    void insertCategorie(string nom);
 
     void updateOperation(string id, string date, string value, string description,
                          string reference, string reste);

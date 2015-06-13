@@ -33,6 +33,8 @@ public:
 
     void show();
     
+    void load_options(string newMag="", string newCat="");
+
 private slots:
 
     void on_tableWidget_cellChanged(int row, int column);
@@ -79,6 +81,10 @@ private slots:
 
     void on_check_sort_clicked(bool checked);
 
+    void on_list_categories_currentIndexChanged(const QString &arg1);
+
+    void on_list_magasins_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::view_Comptes *ui;
     DAO dao;
@@ -93,7 +99,6 @@ private:
     vector<Operation> loadSearch();
     void maj_restes(string id, string diff);
     void remplirTableau(vector<Operation> operations);
-    void load_options();
 };
 
 #endif // COMPTES_H

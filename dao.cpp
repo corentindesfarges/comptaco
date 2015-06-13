@@ -256,7 +256,7 @@ vector<Categorie> DAO::getAllCategories()
 {
     this->open();
     vector<Categorie > result;
-    string rq = "SELECT * FROM CATEGORIE;";
+    string rq = "SELECT * FROM CATEGORIE ORDER BY LOWER(NOMCAT) ASC;";
 
     this->execute(rq);
 
@@ -276,7 +276,7 @@ vector<Magasin> DAO::getAllMagasins()
 {
     this->open();
     vector<Magasin > result;
-    string rq = "SELECT * FROM MAGASIN;";
+    string rq = "SELECT * FROM MAGASIN ORDER BY LOWER(NOMMAG) ASC;";
 
     this->execute(rq);
 

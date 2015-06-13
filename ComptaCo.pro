@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     categorie.cpp \
     magasin.cpp \
     dao.cpp \
-    utilities.cpp
+    utilities.cpp \
+    view_addbox.cpp
 
 HEADERS  += \
     sqlite3.h \
@@ -39,12 +40,14 @@ HEADERS  += \
     categorie.h \
     magasin.h \
     dao.h \
-    utilities.h
+    utilities.h \
+    view_addbox.h
 
 FORMS    += accueil.ui \
     magasins.ui \
     comptes.ui \
-    categories.ui
+    categories.ui \
+    addbox.ui
 
 DISTFILES += \
     tab.css \

@@ -16,6 +16,7 @@
 #include "qselect.h"
 #include "ui_comptes.h"
 #include "view_accueil.h"
+#include "view_addbox.h"
 #include "view_categories.h"
 #include "view_comptes.h"
 #include "view_magasins.h"
@@ -367,31 +368,50 @@ void view_Comptes::currentIndexChanged(int idx)
 }
 
 
-void view_Comptes::load_options()
+void view_Comptes::load_options(string newMag, string newCat)
 {
     readyForUpdate=false;
+
+    ui->list_pmt->clear();
     ui->list_pmt->addItem("CB");
     ui->list_pmt->addItem("Chèque");
     ui->list_pmt->addItem("Espèce");
     ui->list_pmt->addItem("Virement");
     ui->list_pmt->addItem("Autre");
 
+    ui->list_pmt_2->clear();
     ui->list_pmt_2->addItem("CB");
     ui->list_pmt_2->addItem("Chèque");
     ui->list_pmt_2->addItem("Espèce");
     ui->list_pmt_2->addItem("Virement");
     ui->list_pmt_2->addItem("Autre");
 
-    vector<Categorie> categories = dao.getAllCategories();
-    for(int i=0;i<categories.size();i++){
-        ui->list_categories->addItem(QString::fromStdString(categories[i].getNom()));
-        ui->list_categories_2->addItem(QString::fromStdString(categories[i].getNom()));
+    if((newMag=="" && newCat=="") || newMag=="")
+    {
+        vector<Categorie> categories = dao.getAllCategories();
+        ui->list_categories->clear();
+        ui->list_categories_2->clear();
+        for(int i=0;i<categories.size();i++){
+            ui->list_categories->addItem(QString::fromStdString(categories[i].getNom()));
+            if(categories[i].getNom()==newCat)
+                ui->list_categories->setCurrentIndex(i);
+            ui->list_categories_2->addItem(QString::fromStdString(categories[i].getNom()));
+        }
+        ui->list_categories->addItem("Ajouter...");
     }
 
-    vector<Magasin> magasins= dao.getAllMagasins();
-    for(int i=0;i<magasins.size();i++){
-        ui->list_magasins->addItem(QString::fromStdString(magasins[i].getNom()));
-        ui->list_magasins_2->addItem(QString::fromStdString(magasins[i].getNom()));
+    if((newMag=="" && newCat=="") || newCat=="")
+    {
+        vector<Magasin> magasins= dao.getAllMagasins();
+        ui->list_magasins->clear();
+        ui->list_magasins_2->clear();
+        for(int i=0;i<magasins.size();i++){
+            ui->list_magasins->addItem(QString::fromStdString(magasins[i].getNom()));
+            if(magasins[i].getNom()==newMag)
+                ui->list_magasins->setCurrentIndex(i);
+            ui->list_magasins_2->addItem(QString::fromStdString(magasins[i].getNom()));
+        }
+        ui->list_magasins->addItem("Ajouter...");
     }
 
     QDate date = date.currentDate();
@@ -443,6 +463,9 @@ void view_Comptes::on_btn_add_clicked()
     ui->edit_ref->setText("");
     ui->edit_desc->setText("");
     ui->edit_value->setText("");
+    ui->list_pmt->setCurrentIndex(0);
+    ui->list_magasins->setCurrentIndex(0);
+    ui->list_categories->setCurrentIndex(0);
 
     readyForUpdate=false;
     ui->check_categories->setChecked(false);
@@ -688,4 +711,24 @@ void view_Comptes::on_check_sort_clicked(bool checked)
         update();
     else
         update(loadSearch());
+}
+
+void view_Comptes::on_list_categories_currentIndexChanged(const QString &arg1)
+{
+    if(arg1=="Ajouter...")
+    {
+        view_addbox *addbox = new view_addbox(this, "cat");
+        addbox->setWindowModality(Qt::ApplicationModal);
+        addbox->show();
+    }
+}
+
+void view_Comptes::on_list_magasins_currentIndexChanged(const QString &arg1)
+{
+    if(arg1=="Ajouter...")
+    {
+        view_addbox *addbox = new view_addbox(this, "mag");
+        addbox->setWindowModality(Qt::ApplicationModal);
+        addbox->show();
+    }
 }

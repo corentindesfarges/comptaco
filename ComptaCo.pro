@@ -13,6 +13,10 @@ TEMPLATE = app
 
 CONFIG += c++11
 
+unix{
+LIBS += -ldl
+}
+
 SOURCES += main.cpp\
     sqlite3.c \
     qselect.cpp \

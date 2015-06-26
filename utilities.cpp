@@ -14,8 +14,9 @@ string Utilities::nb2string(int n)
 {
     char s[11];
     try{
-        itoa(n,s,10);
+        snprintf(s, 11, "%d", n);
     } catch (std::exception e){
+        cerr << n << " is not a correct nomber.";
     }
 
     return s;

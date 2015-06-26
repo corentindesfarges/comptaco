@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ComptaCo 2.0</string>
+   <string>ComptaCo 2.1</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <property name="layoutDirection">
@@ -140,7 +140,7 @@ background-image: url(:wp1b)
      </font>
     </property>
     <property name="text">
-     <string>ComptaCo 2.0</string>
+     <string>ComptaCo 2.1</string>
     </property>
    </widget>
    <widget class="QLabel" name="lb_stitre_1">
@@ -310,7 +310,7 @@ background-image: url(:wp1b)
      </font>
     </property>
     <property name="text">
-     <string>ComptaCo 2.0</string>
+     <string>ComptaCo 2.1</string>
     </property>
    </widget>
    <widget class="QLabel" name="lb_stitre_2">

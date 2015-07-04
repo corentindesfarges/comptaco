@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE aBLOCK *****
+/* ***** BEGIN LICENSE BLOCK *****
  * Corentin Desfarges - Copyright (C) 2013 - 2015
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
@@ -16,7 +16,6 @@
 #include "qselect.h"
 #include "ui_comptes.h"
 #include "view_accueil.h"
-#include "view_addbox.h"
 #include "view_addbox.h"
 #include "view_categories.h"
 #include "view_comptes.h"
@@ -76,7 +75,9 @@ void view_Comptes::setTotal(string total)
 void view_Comptes::update()
 {
     if(!readyForUpdate)
+    {
         return;
+    }
 
     readyForUpdate=false;
     ui->tableWidget->clear();
@@ -89,7 +90,9 @@ void view_Comptes::update()
 void view_Comptes::update(vector<Operation> operations)
 {
     if(!readyForUpdate)
+    {
         return;
+    }
 
     readyForUpdate=false;
     ui->tableWidget->clear();
@@ -101,33 +104,50 @@ void view_Comptes::update(vector<Operation> operations)
 void view_Comptes::navig()
 {
     bool stay = false;
-    if(sender()->objectName()=="acc"){
+    if(sender()->objectName()=="acc")
+    {
         view_Accueil *a = new view_Accueil();
         a->show();
-    } else if(sender()->objectName()=="cpt"){
+    }
+    else if(sender()->objectName()=="cpt")
+    {
         view_Comptes *c = new view_Comptes();
         c->show();
-    } else if(sender()->objectName()=="fav"){
+    }
+    else if(sender()->objectName()=="fav")
+    {
         view_Favoris *f = new view_Favoris();
         f->show();
-    } else if(sender()->objectName()=="mag"){
+    }
+    else if(sender()->objectName()=="mag")
+    {
         view_Magasins *m = new view_Magasins();
         m->show();
-    } else if(sender()->objectName()=="cat"){
+    }
+    else if(sender()->objectName()=="cat")
+    {
         view_Categories *c = new view_Categories();
         c->show();
-    } else if(sender()->objectName()=="quit"){
+    }
+    else if(sender()->objectName()=="quit")
+    {
         exit(1);
-    } else if(sender()->objectName()=="export"){
+    }
+    else if(sender()->objectName()=="export")
+    {
         exporter();
         stay = true;
-    } else if(sender()->objectName()=="print"){
+    }
+    else if(sender()->objectName()=="print")
+    {
         imprimer(ui->tableWidget,"TEST");
         stay = true;
     }
 
     if(!stay)
+    {
         this->close();
+    }
 }
 
 
@@ -135,7 +155,8 @@ void view_Comptes::exporter()
 {
     vector<Operation> operations = dao.getAllOperations();
     ofstream fichier("cpt_report", ios::out | ios::trunc);
-    for(int i=0;i<operations.size();i++){
+    for(int i=0;i<operations.size();i++)
+    {
         fichier << operations[i].toString();
     }
 
@@ -167,8 +188,11 @@ void view_Comptes::imprimer(QTableWidget * tableau_a_imprimer, QString titre)
         for (int col = 0; col < tableau_a_imprimer->columnCount()-1; col ++)
         {
             if(col < 3 || (col > 3 && col < 6) || col ==8)
+            {
                 html += "\t\t<td>"+tableau_a_imprimer->item(row,col)->text().toStdString()+"</td>\n";
-            else{
+            }
+            else
+            {
                 string value = ((QComboBox*)tableau_a_imprimer->cellWidget(row,col))->currentText().toStdString();
                 if(value=="--- Magasins ---" || value=="--- Catégories ---")
                     value = "Autres";
@@ -259,7 +283,8 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
         int idxCat = -1;
         int cpt_index = 0;
 
-        foreach (Categorie categorie, categories) {
+        foreach (Categorie categorie, categories)
+        {
             list_cat->addItem(QString::fromStdString(categorie.getNom()));
             if(categorie.getId()==operation.getCategorie().getId())
             {
@@ -270,9 +295,11 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
 
         int idxMag = -1;
         cpt_index = 0;
-        foreach (Magasin magasin, magasins) {
+        foreach (Magasin magasin, magasins)
+        {
             list_mag->addItem(QString::fromStdString(magasin.getNom()));
-            if(magasin.getId()==operation.getMagasin().getId()){
+            if(magasin.getId()==operation.getMagasin().getId())
+            {
                 idxMag = cpt_index;
             }
             cpt_index++;
@@ -280,15 +307,25 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
 
         int idxType = -1;
         if(operation.getTypePmt()=="CB")
+        {
             idxType = 0;
+        }
         else if(operation.getTypePmt()=="Chèque")
+        {
             idxType = 1;
+        }
         else if(operation.getTypePmt()=="Espèce")
+        {
             idxType = 2;
+        }
         else if(operation.getTypePmt()=="Virement")
+        {
             idxType = 3;
+        }
         else if(operation.getTypePmt()=="Autre")
+        {
             idxType = 4;
+        }
 
         ui->tableWidget->setItem(no_line,0,new QTableWidgetItem(QString::number(operation.getId())));
         ui->tableWidget->setItem(no_line,1,new QTableWidgetItem(operation.getDate().toString("dd/MM/yyyy")));
@@ -342,9 +379,11 @@ void view_Comptes::currentIndexChanged(int idx)
     string column = sp[0];
     string value = cb->currentText().toStdString();
 
-    if(column=="MAG"){
+    if(column=="MAG")
+    {
         value = Utilities::nb2string(dao.getMagasin("NOMMAG",value).getId());
-    } else if(column=="CAT"){
+    } else if(column=="CAT")
+    {
         value = Utilities::nb2string(dao.getCategorie("NOMCAT",value).getId());
     }
     dao.updateOperation(id, column, value);
@@ -372,7 +411,8 @@ void view_Comptes::load_options(string newMag, string newCat)
     vector<Favori> favoris= dao.getAllFavoris();
     ui->list_fav->clear();
     ui->list_fav->addItem("Mes Favoris");
-    for(int i=0;i<favoris.size();i++){
+    for(int i=0;i<favoris.size();i++)
+    {
         ui->list_fav->addItem(QString::fromStdString(favoris[i].getDescription()));
     }
 
@@ -381,10 +421,13 @@ void view_Comptes::load_options(string newMag, string newCat)
         vector<Categorie> categories = dao.getAllCategories();
         ui->list_categories->clear();
         ui->list_categories_2->clear();
-        for(int i=0;i<categories.size();i++){
+        for(int i=0;i<categories.size();i++)
+        {
             ui->list_categories->addItem(QString::fromStdString(categories[i].getNom()));
             if(categories[i].getNom()==newCat)
+            {
                 ui->list_categories->setCurrentIndex(i);
+            }
             ui->list_categories_2->addItem(QString::fromStdString(categories[i].getNom()));
         }
         ui->list_categories->addItem("Ajouter...");
@@ -395,23 +438,32 @@ void view_Comptes::load_options(string newMag, string newCat)
         vector<Magasin> magasins= dao.getAllMagasins();
         ui->list_magasins->clear();
         ui->list_magasins_2->clear();
-        for(int i=0;i<magasins.size();i++){
+        for(int i=0;i<magasins.size();i++)
+        {
             ui->list_magasins->addItem(QString::fromStdString(magasins[i].getNom()));
             if(magasins[i].getNom()==newMag)
+            {
                 ui->list_magasins->setCurrentIndex(i);
+            }
             ui->list_magasins_2->addItem(QString::fromStdString(magasins[i].getNom()));
         }
         ui->list_magasins->addItem("Ajouter...");
     }
 
     QDate date = date.currentDate();
-    for(int i = 0;i<ui->list_annee->count();i++){
+    for(int i = 0;i<ui->list_annee->count();i++)
+    {
         if(ui->list_annee->itemText(i)==date.toString("yyyy"))
+        {
             ui->list_annee->setCurrentIndex(i);
+        }
     }
-    for(int i = 0;i<ui->list_mois->count();i++){
+    for(int i = 0;i<ui->list_mois->count();i++)
+    {
         if(ui->list_mois->itemText(i).toLower()==date.toString("MMMM"))
+        {
             ui->list_mois->setCurrentIndex(i);
+        }
     }
 
     ui->edit_date_begin->setDate(date.addDays(-1));
@@ -481,7 +533,8 @@ void view_Comptes::on_btn_add_clicked()
 
 void view_Comptes::on_tableWidget_cellChanged(int row, int column)
 {
-    if(!mod_rest && readyForUpdate){
+    if(!mod_rest && readyForUpdate)
+    {
         string id = ui->tableWidget->item(row,0)->text().toStdString();
         string newval = ui->tableWidget->item(row,column)->text().toStdString();
         double diff;
@@ -521,7 +574,9 @@ void view_Comptes::maj_restes(string id, string diff)
 vector<Operation> view_Comptes::loadSearch()
 {
     if(!readyForUpdate)
+    {
         return vector<Operation>();
+    }
 
     readyForUpdate = false;
     QDate d1 = QDate::fromString("1000-01-01","yyyy-MM-dd");
@@ -530,11 +585,15 @@ vector<Operation> view_Comptes::loadSearch()
     string nomCat = "";
     string typePmt = "";
 
-    if(ui->check_date->isChecked()){
-        if(ui->rad_entre->isChecked()){
+    if(ui->check_date->isChecked())
+    {
+        if(ui->rad_entre->isChecked())
+        {
             d1 = ui->edit_date_begin->date();
             d2 = ui->edit_date_end->date();
-        } else if(ui->rad_mois->isChecked()){
+        }
+        else if(ui->rad_mois->isChecked())
+        {
             map<string,string> mois;
             mois["Janvier"] = "01";
             mois["Février"] = "02";
@@ -554,30 +613,40 @@ vector<Operation> view_Comptes::loadSearch()
 
             d1 = QDate::fromString((annee+"-"+mois[m]+"-01").c_str(),"yyyy-MM-dd");
             d2 = QDate::fromString((annee+"-"+mois[m]+"-31").c_str(),"yyyy-MM-dd");
-            if(!d2.isValid()){
+            if(!d2.isValid())
+            {
                 d2 = QDate::fromString((annee+"-"+mois[m]+"-30").c_str(),"yyyy-MM-dd");
-                if(!d2.isValid()){
+                if(!d2.isValid())
+                {
                     d2 = QDate::fromString((annee+"-"+mois[m]+"-29").c_str(),"yyyy-MM-dd");
-                    if(!d2.isValid()){
+                    if(!d2.isValid())
+                    {
                         d2 = QDate::fromString((annee+"-"+mois[m]+"-28").c_str(),"yyyy-MM-dd");
                     }
                 }
             }
         }
     }
-    if(ui->check_magasins->isChecked()){
+    if(ui->check_magasins->isChecked())
+    {
         Magasin magasin = dao.getMagasin("NOMMAG",ui->list_magasins_2->currentText().toStdString());
         if(magasin.getId()!=-1)
+        {
             nomMag = magasin.getNom();
+        }
     }
 
-    if(ui->check_categories->isChecked()){
+    if(ui->check_categories->isChecked())
+    {
         Categorie categorie = dao.getCategorie("NOMCAT",ui->list_categories_2->currentText().toStdString());
         if(categorie.getId()!=-1)
+        {
             nomCat = categorie.getNom();
+        }
     }
 
-    if(ui->check_pmt->isChecked()){
+    if(ui->check_pmt->isChecked())
+    {
         typePmt = ui->list_pmt_2->currentText().toStdString();
     }
 
@@ -697,9 +766,13 @@ void view_Comptes::on_check_afficher_tout_toggled(bool checked)
     ui->rad_mois->setEnabled(!checked);
 
     if(checked)
+    {
         update();
+    }
     else
+    {
         update(loadSearch());
+    }
 }
 
 
@@ -709,9 +782,13 @@ void view_Comptes::on_check_sort_clicked(bool checked)
     settings.setValue("sort_chrono",checked);
 
     if(ui->check_afficher_tout->isChecked())
+    {
         update();
+    }
     else
+    {
         update(loadSearch());
+    }
 }
 
 void view_Comptes::on_list_categories_currentIndexChanged(const QString &arg1)
@@ -737,7 +814,9 @@ void view_Comptes::on_list_magasins_currentIndexChanged(const QString &arg1)
 void view_Comptes::on_list_fav_currentIndexChanged(const QString &description)
 {
     if(description=="Mes Favoris")
+    {
         return;
+    }
 
     Favori favori = dao.getFavori("DESCRIPTION",description.toStdString());
     ui->edit_value->setText(QString::fromStdString(Utilities::nb2string(favori.getValue())));
@@ -746,7 +825,8 @@ void view_Comptes::on_list_fav_currentIndexChanged(const QString &description)
 
     int idxType = -1, idxCat = -1, idxMag = -1, cpt_index = 0;
     vector<Categorie> categories = dao.getAllCategories();
-    foreach (Categorie categorie, categories) {cout<<categorie.getId()<<"-"<<favori.getCategorie().getId()<<endl;
+    foreach (Categorie categorie, categories)
+    {
         if(categorie.getId()==favori.getCategorie().getId())
         {
             idxCat = cpt_index;
@@ -756,25 +836,42 @@ void view_Comptes::on_list_fav_currentIndexChanged(const QString &description)
 
     cpt_index = 0;
     vector<Magasin> magasins= dao.getAllMagasins();
-    foreach (Magasin magasin, magasins) {
-        if(magasin.getId()==favori.getMagasin().getId()){
+    foreach (Magasin magasin, magasins)
+    {
+        if(magasin.getId()==favori.getMagasin().getId())
+        {
             idxMag = cpt_index++;
         }
         cpt_index++;
     }
 
     if(favori.getTypePmt()=="CB")
+    {
         idxType = 0;
+    }
     else if(favori.getTypePmt()=="Chèque")
+    {
         idxType = 1;
+    }
     else if(favori.getTypePmt()=="Espèce")
+    {
         idxType = 2;
+    }
     else if(favori.getTypePmt()=="Virement")
+    {
         idxType = 3;
+    }
     else if(favori.getTypePmt()=="Autre")
+    {
         idxType = 4;
+    }
 
     ui->list_pmt->setCurrentIndex(idxType);
     ui->list_magasins->setCurrentIndex(idxMag);
     ui->list_categories->setCurrentIndex(idxCat);
+
+    if(ui->check_immediat_fav->isChecked())
+    {
+        this->on_btn_add_clicked();
+    }
 }

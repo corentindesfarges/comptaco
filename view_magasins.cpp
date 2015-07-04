@@ -6,11 +6,11 @@
 
 #include "dao.h"
 #include "ui_magasins.h"
-#include "view_categories.h"
 #include "view_accueil.h"
+#include "view_categories.h"
+#include "view_comptes.h"
 #include "view_favoris.h"
 #include "view_magasins.h"
-#include "view_comptes.h"
 
 view_Magasins::view_Magasins(QWidget *parent) :
     QMainWindow(parent),

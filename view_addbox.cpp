@@ -5,8 +5,8 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "dao.h"
-#include "view_addbox.h"
 #include "ui_addbox.h"
+#include "view_addbox.h"
 
 view_addbox::view_addbox(view_Favoris *view, string type, QWidget *parent) :
     QMainWindow(parent), ui(new Ui::view_addbox), m_viewFavoris(view), m_viewComptes(nullptr)

@@ -30,7 +30,9 @@ SOURCES += main.cpp\
     magasin.cpp \
     dao.cpp \
     utilities.cpp \
-    view_addbox.cpp
+    view_addbox.cpp \
+    favori.cpp \
+    view_favoris.cpp
 
 HEADERS  += \
     sqlite3.h \
@@ -45,13 +47,16 @@ HEADERS  += \
     magasin.h \
     dao.h \
     utilities.h \
-    view_addbox.h
+    view_addbox.h \
+    favori.h \
+    view_favoris.h
 
 FORMS    += accueil.ui \
     magasins.ui \
     comptes.ui \
     categories.ui \
-    addbox.ui
+    addbox.ui \
+    favoris.ui
 
 DISTFILES += \
     tab.css \

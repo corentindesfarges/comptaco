@@ -56,15 +56,18 @@ public:
     void setReste(double value);
 
 private:
-    int id;
     QDate date;
+    double reste;
+
+protected:
+    int id;
     double value;
     string typePmt;
     string description;
     string reference;
     Magasin magasin;
     Categorie categorie;
-    double reste;
+
 };
 
 #endif // OPERATION_H

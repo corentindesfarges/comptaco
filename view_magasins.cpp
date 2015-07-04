@@ -5,10 +5,10 @@
  * ****** END LICENSE BLOCK ****** */
 
 #include "dao.h"
-#include "view_magasins.h"
 #include "ui_magasins.h"
 #include "view_categories.h"
 #include "view_accueil.h"
+#include "view_favoris.h"
 #include "view_magasins.h"
 #include "view_comptes.h"
 
@@ -21,12 +21,14 @@ view_Magasins::view_Magasins(QWidget *parent) :
     setMaximumSize(size());
 
     ui->actionAccueil->setObjectName("acc");
+    ui->actionFavoris->setObjectName("fav");
     ui->actionComptes->setObjectName("cpt");
     ui->actionCategories->setObjectName("cat");
     ui->actionQuitter->setObjectName("quit");
 
     connect(ui->actionAccueil,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionComptes,SIGNAL(triggered()),this,SLOT(navig()));
+    connect(ui->actionFavoris,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionCategories,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionQuitter,SIGNAL(triggered()),this,SLOT(navig()));
 
@@ -57,6 +59,9 @@ void view_Magasins::navig()
     } else if(sender()->objectName()=="cpt"){
         view_Comptes *c = new view_Comptes();
         c->show();
+    } else if(sender()->objectName()=="fav"){
+        view_Favoris *f = new view_Favoris();
+        f->show();
     } else if(sender()->objectName()=="mag"){
         view_Magasins *m = new view_Magasins();
         m->show();

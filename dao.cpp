@@ -55,6 +55,18 @@ void DAO::loadSchema()
             FOREIGN KEY (CAT) REFERENCES CATEGORIE(IDCAT)           \
         );                                                          \
                                                                     \
+        CREATE TABLE IF NOT EXISTS FAVORI (                         \
+            IDFAV INTEGER PRIMARY KEY  NOT NULL ,                   \
+            VALEUR DOUBLE NOT NULL ,                                \
+            TYPE VARCHAR NOT NULL ,                                 \
+            DESCRIPTION VARCHAR NOT NULL ,                          \
+            REFERENCE VARCHAR NOT NULL ,                            \
+            MAG INTEGER NOT NULL ,                                  \
+            CAT INTEGER NOT NULL ,                                  \
+            FOREIGN KEY (MAG) REFERENCES MAGASIN(IDMAG),            \
+            FOREIGN KEY (CAT) REFERENCES CATEGORIE(IDCAT)           \
+        );                                                          \
+                                                                    \
         INSERT INTO MAGASIN (IDMAG, NOMMAG) VALUES (-1,\"\");       \
         INSERT INTO CATEGORIE (IDCAT, NOMCAT) VALUES (-1,\"\");     ";
 
@@ -119,6 +131,7 @@ double DAO::getReste(){
     this->close();
     return reste;
 }
+
 
 string DAO::orderBy(string col)
 {
@@ -252,6 +265,29 @@ Operation DAO::getOperation(string knewColName, string knewValue)
 }
 
 
+Favori DAO::getFavori(string knewColName, string knewValue)
+{
+    this->open();
+
+    string rq = "SELECT IDFAV,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT FROM FAVORI INNER JOIN MAGASIN ON FAVORI.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON FAVORI.CAT = CATEGORIE.IDCAT WHERE "+knewColName+" LIKE '"+knewValue+"'"+orderBy("IDFAV")+";";
+    this->execute(rq);
+
+    Favori favori;
+    favori.setId(atoi(callback_v[0].c_str()));
+    favori.setValue(stod(callback_v[1]));
+    favori.setTypePmt(callback_v[2]);
+    favori.setDescription(callback_v[3]);
+    favori.setReference(callback_v[4]);
+    int id_mag = Utilities::string2int(callback_v[5]);
+    favori.setMagasin(Magasin(id_mag,callback_v[6]));
+    int id_cat = Utilities::string2int(callback_v[7]);
+    favori.setCategorie(Categorie(id_cat,callback_v[8]));
+
+    this->close();
+    return favori;
+}
+
+
 vector<Categorie> DAO::getAllCategories()
 {
     this->open();
@@ -321,6 +357,34 @@ vector<Operation> DAO::getAllOperations()
     return result;
 }
 
+
+vector<Favori> DAO::getAllFavoris()
+{
+    this->open();
+    vector<Favori > result;
+    string rq = "SELECT IDFAV,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT FROM FAVORI INNER JOIN MAGASIN ON FAVORI.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON FAVORI.CAT = CATEGORIE.IDCAT"+orderBy("IDFAV")+";";
+    std::cout << rq << std::endl;
+
+    this->execute(rq);
+
+    for(int i = 0 ; i < callback_v.size();){
+        Favori favori;
+        favori.setId(atoi(callback_v[i++].c_str()));
+        favori.setValue(stod(callback_v[i++]));
+        favori.setTypePmt(callback_v[i++]);
+        favori.setDescription(callback_v[i++]);
+        favori.setReference(callback_v[i++]);
+        int id_mag = Utilities::string2int(callback_v[(i++)]);
+        favori.setMagasin(Magasin(id_mag,callback_v[i++]));
+        int id_cat = Utilities::string2int(callback_v[(i++)]);
+        favori.setCategorie(Categorie(id_cat,callback_v[i++]));
+        result.push_back(favori);
+    }
+
+    this->close();
+    return result;
+}
+
 /*############################ INSERT ############################*/
 
 void DAO::insertOperation(string date, string value, string typePmt, string description,
@@ -337,6 +401,25 @@ void DAO::insertOperation(string date, string value, string typePmt, string desc
     this->open();
 
     string rq = "INSERT INTO OPERATION (DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,MAG,CAT,RESTE) VALUES ('"+date+"',"+value+",'"+typePmt+"','"+description+"','"+reference+"',"+idmag+","+idcat+","+reste+");";
+    this->execute(rq);
+
+    this->close();
+}
+
+
+void DAO::insertFavori(string value, string typePmt, string description,
+                       string reference, string magasin, string categorie)
+{
+    value = Utilities::escapeString(value);
+    description = Utilities::escapeString(description);
+    reference = Utilities::escapeString(reference);
+
+    string idmag = Utilities::nb2string(getMagasin("NOMMAG",magasin).getId());
+    string idcat = Utilities::nb2string(getCategorie("NOMCAT",categorie).getId());
+
+    this->open();
+
+    string rq = "INSERT INTO FAVORI (VALEUR,TYPE,DESCRIPTION,REFERENCE,MAG,CAT) VALUES ("+value+",'"+typePmt+"','"+description+"','"+reference+"',"+idmag+","+idcat+");";
     this->execute(rq);
 
     this->close();
@@ -396,6 +479,32 @@ void DAO::updateOperation(string id, string date, string value, string descripti
 }
 
 
+void DAO::updateFavori(string id, string value, string description, string reference)
+{
+    this->open();
+    value = Utilities::escapeString(value);
+    description = Utilities::escapeString(description);
+    reference = Utilities::escapeString(reference);
+
+    string rq = "UPDATE FAVORI SET VALEUR='"+value+"',DESCRIPTION='"+description+"',REFERENCE='"+reference+"' WHERE IDFAV="+id+";";
+    this->execute(rq);
+
+    this->close();
+}
+
+
+void DAO::updateFavori(string id, string col, string value)
+{
+    this->open();
+    value = Utilities::escapeString(value);
+
+    string rq = "UPDATE FAVORI SET "+col+"='"+value+"' WHERE IDFAV="+id+";";
+    this->execute(rq);
+
+    this->close();
+}
+
+
 void DAO::updateMagasin(string id, string nom)
 {
     this->open();
@@ -436,6 +545,17 @@ void DAO::removeOperation(string id)
 {
     this->open();
     string rq = "DELETE FROM OPERATION WHERE IDOP="+id+";";
+
+    this->execute(rq);
+
+    this->close();
+}
+
+
+void DAO::removeFavori(string id)
+{
+    this->open();
+    string rq = "DELETE FROM FAVORI WHERE IDFAV="+id+";";
 
     this->execute(rq);
 

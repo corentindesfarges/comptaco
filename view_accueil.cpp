@@ -12,6 +12,7 @@
 #include "view_accueil.h"
 #include "view_categories.h"
 #include "view_comptes.h"
+#include "view_favoris.h"
 #include "view_magasins.h"
 
 view_Accueil::view_Accueil(QWidget *parent) :
@@ -67,6 +68,13 @@ void view_Accueil::on_pushButton_4_clicked()
     this->close();
 }
 
+void view_Accueil::on_pushButton_5_clicked()
+
+{
+    view_Favoris *c = new view_Favoris();
+    c->show();
+    this->close();
+}
 void view_Accueil::on_btn_theme_classic_clicked()
 {
     QSettings settings("Dev", "ComptaCool");
@@ -90,3 +98,4 @@ void view_Accueil::on_btn_theme_mother_fest_clicked()
     showLabels();
     Utilities::setTheme(this,"1");
 }
+

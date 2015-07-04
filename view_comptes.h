@@ -85,6 +85,8 @@ private slots:
 
     void on_list_magasins_currentIndexChanged(const QString &arg1);
 
+    void on_list_fav_currentIndexChanged(const QString &description);
+
 private:
     Ui::view_Comptes *ui;
     DAO dao;

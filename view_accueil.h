@@ -43,6 +43,8 @@ private slots:
 
     void on_btn_theme_mother_fest_clicked();
 
+    void on_pushButton_5_clicked();
+
 private:
     Ui::view_Accueil *ui;
 };

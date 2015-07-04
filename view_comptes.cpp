@@ -1,4 +1,4 @@
-/* ***** BEGIN LICENSE BLOCK *****
+/* ***** BEGIN LICENSE aBLOCK *****
  * Corentin Desfarges - Copyright (C) 2013 - 2015
  * Distributed under the terms of the GNU Lesser General Public License (LGPL) as
  * published by the Free Software Foundation.
@@ -17,8 +17,10 @@
 #include "ui_comptes.h"
 #include "view_accueil.h"
 #include "view_addbox.h"
+#include "view_addbox.h"
 #include "view_categories.h"
 #include "view_comptes.h"
+#include "view_favoris.h"
 #include "view_magasins.h"
 
 using namespace std;
@@ -32,6 +34,7 @@ view_Comptes::view_Comptes(QWidget *parent) :
     ui->edit_date->setDate(QDate::currentDate());
 
     ui->actionAccueil->setObjectName("acc");
+    ui->actionFavoris->setObjectName("fav");
     ui->actionCategories->setObjectName("cat");
     ui->actionQuitter->setObjectName("quit");
     ui->actionMagasins->setObjectName("mag");
@@ -39,6 +42,7 @@ view_Comptes::view_Comptes(QWidget *parent) :
     ui->actionPrint->setObjectName("print");
 
     connect(ui->actionAccueil,SIGNAL(triggered()),this,SLOT(navig()));
+    connect(ui->actionFavoris,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionCategories,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionQuitter,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionMagasins,SIGNAL(triggered()),this,SLOT(navig()));
@@ -103,6 +107,9 @@ void view_Comptes::navig()
     } else if(sender()->objectName()=="cpt"){
         view_Comptes *c = new view_Comptes();
         c->show();
+    } else if(sender()->objectName()=="fav"){
+        view_Favoris *f = new view_Favoris();
+        f->show();
     } else if(sender()->objectName()=="mag"){
         view_Magasins *m = new view_Magasins();
         m->show();
@@ -182,30 +189,6 @@ void view_Comptes::imprimer(QTableWidget * tableau_a_imprimer, QString titre)
 }
 
 
-vector<string> view_Comptes::split(const string &src, const char delim)
-{
-    vector<string> v;
-    string::const_iterator p = src.begin ();
-    string::const_iterator q =
-            std::find (p, src.end (), delim);
-    while (q != src.end ())
-    {
-        v.push_back (string (p, q));
-        p = q;
-        q = std::find (++p, src.end (), delim);
-    }
-    if (p != src.end ())
-        v.push_back (string (p, src.end ()));
-    return v;
-}
-
-
-int toPercent(int pct, int max)
-{
-    return max*pct/100;
-}
-
-
 void view_Comptes::resizeEvent( QResizeEvent *e )
 {
     QMainWindow::resizeEvent(e);
@@ -217,16 +200,16 @@ void view_Comptes::resizeWindow()
 {
     int w = this->width()-300;
 
-    ui->tableWidget->setColumnWidth(0,toPercent(w,5));
-    ui->tableWidget->setColumnWidth(1,toPercent(w,8));
-    ui->tableWidget->setColumnWidth(2,toPercent(w,6));
-    ui->tableWidget->setColumnWidth(3,toPercent(w,7));
-    ui->tableWidget->setColumnWidth(4,toPercent(w,20));
-    ui->tableWidget->setColumnWidth(5,toPercent(w,16));
-    ui->tableWidget->setColumnWidth(6,toPercent(w,14));
-    ui->tableWidget->setColumnWidth(7,toPercent(w,14));
-    ui->tableWidget->setColumnWidth(8,toPercent(w,7));
-    ui->tableWidget->setColumnWidth(9,toPercent(w,3));
+    ui->tableWidget->setColumnWidth(0,Utilities::toPercent(w,5));
+    ui->tableWidget->setColumnWidth(1,Utilities::toPercent(w,8));
+    ui->tableWidget->setColumnWidth(2,Utilities::toPercent(w,6));
+    ui->tableWidget->setColumnWidth(3,Utilities::toPercent(w,7));
+    ui->tableWidget->setColumnWidth(4,Utilities::toPercent(w,20));
+    ui->tableWidget->setColumnWidth(5,Utilities::toPercent(w,16));
+    ui->tableWidget->setColumnWidth(6,Utilities::toPercent(w,14));
+    ui->tableWidget->setColumnWidth(7,Utilities::toPercent(w,14));
+    ui->tableWidget->setColumnWidth(8,Utilities::toPercent(w,7));
+    ui->tableWidget->setColumnWidth(9,Utilities::toPercent(w,3));
 }
 
 
@@ -353,7 +336,7 @@ void view_Comptes::currentIndexChanged(int idx)
     QComboBox *cb = (QComboBox*)sender();
 
     string s = sender()->objectName().toStdString();
-    vector<string> sp = split(s,'_');
+    vector<string> sp = Utilities::split(s,'_');
 
     string id = sp[1];
     string column = sp[0];
@@ -385,6 +368,13 @@ void view_Comptes::load_options(string newMag, string newCat)
     ui->list_pmt_2->addItem("Espèce");
     ui->list_pmt_2->addItem("Virement");
     ui->list_pmt_2->addItem("Autre");
+
+    vector<Favori> favoris= dao.getAllFavoris();
+    ui->list_fav->clear();
+    ui->list_fav->addItem("Mes Favoris");
+    for(int i=0;i<favoris.size();i++){
+        ui->list_fav->addItem(QString::fromStdString(favoris[i].getDescription()));
+    }
 
     if((newMag=="" && newCat=="") || newMag=="")
     {
@@ -460,12 +450,23 @@ void view_Comptes::on_btn_add_clicked()
                ui->list_categories->currentText().toStdString(),
                Utilities::nb2string(reste));
 
+    if(ui->check_favori->isChecked())
+    {
+        dao.insertFavori(ui->edit_value->text().toStdString(),
+               ui->list_pmt->currentText().toStdString(),
+               ui->edit_desc->text().toStdString(),
+               ui->edit_ref->text().toStdString(),
+               ui->list_magasins->currentText().toStdString(),
+               ui->list_categories->currentText().toStdString());
+    }
+
     ui->edit_ref->setText("");
     ui->edit_desc->setText("");
     ui->edit_value->setText("");
     ui->list_pmt->setCurrentIndex(0);
     ui->list_magasins->setCurrentIndex(0);
     ui->list_categories->setCurrentIndex(0);
+    ui->check_favori->setChecked(false);
 
     readyForUpdate=false;
     ui->check_categories->setChecked(false);
@@ -731,4 +732,49 @@ void view_Comptes::on_list_magasins_currentIndexChanged(const QString &arg1)
         addbox->setWindowModality(Qt::ApplicationModal);
         addbox->show();
     }
+}
+
+void view_Comptes::on_list_fav_currentIndexChanged(const QString &description)
+{
+    if(description=="Mes Favoris")
+        return;
+
+    Favori favori = dao.getFavori("DESCRIPTION",description.toStdString());
+    ui->edit_value->setText(QString::fromStdString(Utilities::nb2string(favori.getValue())));
+    ui->edit_desc->setText(QString::fromStdString(favori.getDescription()));
+    ui->edit_ref->setText(QString::fromStdString(favori.getReference()));
+
+    int idxType = -1, idxCat = -1, idxMag = -1, cpt_index = 0;
+    vector<Categorie> categories = dao.getAllCategories();
+    foreach (Categorie categorie, categories) {cout<<categorie.getId()<<"-"<<favori.getCategorie().getId()<<endl;
+        if(categorie.getId()==favori.getCategorie().getId())
+        {
+            idxCat = cpt_index;
+        }
+        cpt_index++;
+    }
+
+    cpt_index = 0;
+    vector<Magasin> magasins= dao.getAllMagasins();
+    foreach (Magasin magasin, magasins) {
+        if(magasin.getId()==favori.getMagasin().getId()){
+            idxMag = cpt_index++;
+        }
+        cpt_index++;
+    }
+
+    if(favori.getTypePmt()=="CB")
+        idxType = 0;
+    else if(favori.getTypePmt()=="Chèque")
+        idxType = 1;
+    else if(favori.getTypePmt()=="Espèce")
+        idxType = 2;
+    else if(favori.getTypePmt()=="Virement")
+        idxType = 3;
+    else if(favori.getTypePmt()=="Autre")
+        idxType = 4;
+
+    ui->list_pmt->setCurrentIndex(idxType);
+    ui->list_magasins->setCurrentIndex(idxMag);
+    ui->list_categories->setCurrentIndex(idxCat);
 }

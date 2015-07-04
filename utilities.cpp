@@ -72,3 +72,27 @@ void Utilities::setTheme(QMainWindow *window, QString no)
     QSettings settings("Dev", "ComptaCool");
     window->setStyleSheet("#centralWidget{background-image: url(:wp"+no+settings.value("theme","c").toString()+")}");
 }
+
+
+vector<string> Utilities::split(const string &src, const char delim)
+{
+    vector<string> v;
+    string::const_iterator p = src.begin ();
+    string::const_iterator q =
+            std::find (p, src.end (), delim);
+    while (q != src.end ())
+    {
+        v.push_back (string (p, q));
+        p = q;
+        q = std::find (++p, src.end (), delim);
+    }
+    if (p != src.end ())
+        v.push_back (string (p, src.end ()));
+    return v;
+}
+
+
+int Utilities::toPercent(int pct, int max)
+{
+    return max*pct/100;
+}

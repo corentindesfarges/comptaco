@@ -9,8 +9,9 @@
 
 #include <QMainWindow>
 
-#include "view_comptes.h"
 #include "utilities.h"
+#include "view_comptes.h"
+#include "view_favoris.h"
 
 namespace Ui {
 class view_addbox;
@@ -21,10 +22,12 @@ class view_addbox : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit view_addbox(view_Comptes *vc, string type, QWidget *parent = 0);
+    explicit view_addbox(view_Comptes *view, string type, QWidget *parent = 0);
+    explicit view_addbox(view_Favoris *view, string type, QWidget *parent = 0);
     ~view_addbox();
 
     void show();
+    void load_options(const string& newMag="", const string& newCat="");
 
 private slots:
     void on_btn_cancel_clicked();
@@ -34,7 +37,8 @@ private slots:
 private:
     Ui::view_addbox *ui;
     string type;
-    view_Comptes *v_comptes;
+    view_Comptes *m_viewComptes;
+    view_Favoris *m_viewFavoris;
 
 };
 

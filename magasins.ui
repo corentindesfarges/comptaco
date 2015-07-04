@@ -206,6 +206,7 @@
     <addaction name="actionAccueil"/>
     <addaction name="separator"/>
     <addaction name="actionComptes"/>
+    <addaction name="actionFavoris"/>
     <addaction name="actionCategories"/>
    </widget>
    <addaction name="menuFichier"/>
@@ -229,6 +230,11 @@
   <action name="actionComptes">
    <property name="text">
     <string>Comptes</string>
+   </property>
+  </action>
+  <action name="actionFavoris">
+   <property name="text">
+    <string>Favoris</string>
    </property>
   </action>
  </widget>

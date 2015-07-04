@@ -8,9 +8,28 @@
 #include "view_addbox.h"
 #include "ui_addbox.h"
 
-view_addbox::view_addbox(view_Comptes *vc, string type, QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::view_addbox), v_comptes(vc)
+view_addbox::view_addbox(view_Favoris *view, string type, QWidget *parent) :
+    QMainWindow(parent), ui(new Ui::view_addbox), m_viewFavoris(view), m_viewComptes(nullptr)
+{
+    ui->setupUi(this);
+
+    setMinimumSize(size());
+    setMaximumSize(size());
+    this->setWindowFlags(Qt::Window | Qt::FramelessWindowHint);
+
+    this->type = type;
+    if(type=="cat")
+    {
+        ui->lb_titre_1->setText("Nouvelle Catégorie");
+    }
+    else if(type=="mag")
+    {
+        ui->lb_titre_1->setText("Nouveau Magasin");
+    }
+}
+
+view_addbox::view_addbox(view_Comptes *view, string type, QWidget *parent) :
+    QMainWindow(parent), ui(new Ui::view_addbox), m_viewFavoris(nullptr), m_viewComptes(view)
 {
     ui->setupUi(this);
 
@@ -41,15 +60,27 @@ void view_addbox::show()
     Utilities::setTheme(this,"1");
 }
 
+void view_addbox::load_options(const string& newMag, const string& newCat)
+{
+    if(m_viewComptes)
+    {
+        m_viewComptes->load_options(newMag,newCat);
+    }
+    else if(m_viewFavoris)
+    {
+        m_viewFavoris->load_options(newMag,newCat);
+    }
+}
+
 void view_addbox::on_btn_cancel_clicked()
 {
     if(type=="cat")
     {
-        v_comptes->load_options("",";operation/canceled°;");
+        load_options("",";operation/canceled°;");
     }
     else if (type=="mag")
     {
-        v_comptes->load_options(";operation/canceled°;","");
+        load_options(";operation/canceled°;","");
     }
     this->close();
 }
@@ -72,12 +103,12 @@ void view_addbox::on_btn_add_clicked()
     if(type=="cat")
     {
         dao.insertCategorie(nom);
-        v_comptes->load_options("",nom);
+        load_options("",nom);
     }
     else if (type=="mag")
     {
         dao.insertMagasin(nom);
-        v_comptes->load_options(nom,"");
+        load_options(nom,"");
     }
 
     this->close();

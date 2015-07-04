@@ -26,6 +26,9 @@ public:
     static string escapeString(string str);
     static bool checkIsValue(string val);
     static void setTheme(QMainWindow *window, QString no);
+    static vector<string> split(const string &src, const char delim);
+    static int toPercent(int pct, int max);
+
 };
 
 #endif // UTILITIES_H

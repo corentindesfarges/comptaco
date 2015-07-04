@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "categorie.h"
+#include "favori.h"
 #include "magasin.h"
 #include "operation.h"
 #include "typepmt.h"
@@ -34,6 +35,7 @@ public:
     void execute(char* req);
 
     Operation getOperation(string knewColName, string knewValue);
+    Favori getFavori(string knewColName, string knewValue);
     Categorie getCategorie(string knewColName, string knewValue);
     Magasin getMagasin(string knewColName, string knewValue);
 
@@ -43,6 +45,7 @@ public:
     string getTotalOperationsSelected(QDate d1, QDate d2, string nomMag, string nomCat, string typePmt);
 
     vector<Operation> getAllOperations();
+    vector<Favori> getAllFavoris();
     vector<Categorie> getAllCategories();
     vector<Magasin> getAllMagasins();
 
@@ -50,17 +53,22 @@ public:
     string orderBy(string col);
 
     void removeOperation(string id);
+    void removeFavori(string id);
     void removeMagasin(string id);
     void removeCategorie(string id);
 
     void insertOperation(string date, string value, string typePmt, string description,
                          string reference, string magasin, string categorie, string reste);
+    void insertFavori(string value, string typePmt, string description, string reference,
+                      string magasin, string categorie);
     void insertMagasin(string nom);
     void insertCategorie(string nom);
 
     void updateOperation(string id, string date, string value, string description,
                          string reference, string reste);
     void updateOperation(string id, string col, string value);
+    void updateFavori(string id, string col, string value);
+    void updateFavori(string id, string value, string description, string reference);
     void updateOperations(string idBase, string diff);
     void updateMagasin(string id, string nom);
     void updateCategorie(string id, string nom);

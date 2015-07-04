@@ -11,6 +11,7 @@
 #include "view_accueil.h"
 #include "view_categories.h"
 #include "view_comptes.h"
+#include "view_favoris.h"
 #include "view_magasins.h"
 
 view_Categories::view_Categories(QWidget *parent) :
@@ -22,12 +23,14 @@ view_Categories::view_Categories(QWidget *parent) :
     setMaximumSize(size());
 
     ui->actionAccueil->setObjectName("acc");
+    ui->actionFavoris->setObjectName("fav");
     ui->actionComptes->setObjectName("cpt");
     ui->actionQuitter->setObjectName("quit");
     ui->actionMagasins->setObjectName("mag");
 
     connect(ui->actionAccueil,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionComptes,SIGNAL(triggered()),this,SLOT(navig()));
+    connect(ui->actionFavoris,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionQuitter,SIGNAL(triggered()),this,SLOT(navig()));
     connect(ui->actionMagasins,SIGNAL(triggered()),this,SLOT(navig()));
 
@@ -56,6 +59,9 @@ void view_Categories::navig()
     } else if(sender()->objectName()=="cpt"){
         view_Comptes *c = new view_Comptes();
         c->show();
+    } else if(sender()->objectName()=="fav"){
+        view_Favoris *f = new view_Favoris();
+        f->show();
     } else if(sender()->objectName()=="mag"){
         view_Magasins *m = new view_Magasins();
         m->show();

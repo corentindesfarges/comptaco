@@ -37,6 +37,7 @@ private slots:
 private:
     Ui::view_addbox *ui;
     string type;
+    DAO dao;
     view_Comptes *m_viewComptes;
     view_Favoris *m_viewFavoris;
 

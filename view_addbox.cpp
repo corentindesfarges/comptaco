@@ -4,7 +4,6 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
-#include "dao.h"
 #include "ui_addbox.h"
 #include "view_addbox.h"
 
@@ -98,8 +97,6 @@ void view_addbox::on_btn_add_clicked()
         ui->edit_nom->setStyleSheet("");
     }
 
-
-    DAO dao;
     if(type=="cat")
     {
         dao.insertCategorie(nom);

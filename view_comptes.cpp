@@ -409,7 +409,9 @@ void view_Comptes::load_options(string newMag, string newCat)
     ui->list_pmt_2->addItem("Autre");
 
     vector<Favori> favoris= dao.getAllFavoris();
+    ui->list_fav->disconnect(ui->list_fav, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_list_fav_currentIndexChanged(QString)));
     ui->list_fav->clear();
+    ui->list_fav->connect(ui->list_fav, SIGNAL(currentIndexChanged(QString)), this, SLOT(on_list_fav_currentIndexChanged(QString)));
     ui->list_fav->addItem("Mes Favoris");
     for(int i=0;i<favoris.size();i++)
     {

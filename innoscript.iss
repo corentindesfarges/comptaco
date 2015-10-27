@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{3C8BC1D6-4A40-460C-9C15-DE3A0C9055FB}
 AppName=ComptaCo
-AppVersion=2.2
-;AppVerName=ComptaCo 2.2
+AppVersion=2.2.1
+;AppVerName=ComptaCo 2.2.1
 AppPublisher=Corentin Desfarges
 AppPublisherURL=http://corentindesfarges.fr
 AppSupportURL=http://corentindesfarges.fr
@@ -16,7 +16,7 @@ AppUpdatesURL=http://corentindesfarges.fr
 DefaultDirName={pf}\ComptaCo
 DefaultGroupName=ComptaCo
 OutputDir=D:\Qt\Projets
-OutputBaseFilename=comptaco_2.2
+OutputBaseFilename=comptaco_2.2.1
 Compression=lzma
 SolidCompression=yes
 
@@ -105,4 +105,3 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\ComptaCo"; Filenam
 
 [Run]
 Filename: "{app}\ComptaCo.exe"; Description: "{cm:LaunchProgram,ComptaCo}"; Flags: nowait postinstall skipifsilent
-

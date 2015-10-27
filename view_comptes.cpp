@@ -4,6 +4,7 @@
  * published by the Free Software Foundation.
  * ****** END LICENSE BLOCK ****** */
 
+#include <cstdio>
 #include <exception>
 #include <fstream>
 #include <QDate>
@@ -11,6 +12,7 @@
 #include <QUrl>
 #include <QWidget>
 #include <QSettings>
+#include <stdlib.h>
 #include <vector>
 
 #include "qselect.h"
@@ -171,32 +173,29 @@ void view_Comptes::imprimer(QTableWidget * tableau_a_imprimer, QString titre)
     html +="<link href=':/rc/tab.css' rel='stylesheet' type='text/css' >";
     html += "<table>\n";
     html +=     "\t<tr>\n";
-    html +=         "\t\t<td>ID</td>\n";
-    html +=         "\t\t<td>Date</td>\n";
-    html +=         "\t\t<td>+ / -</td>\n";
-    html +=         "\t\t<td>Type</td>\n";
-    html +=         "\t\t<td>Description</td>\n";
-    html +=         "\t\t<td>Référence</td>\n";
-    html +=         "\t\t<td>Magasin</td>\n";
-    html +=         "\t\t<td>Catégorie</td>\n";
-    html +=         "\t\t<td>Reste</td>\n";
+    html +=         "\t\t<td style='width:5%'>ID</td>\n";
+    html +=         "\t\t<td style='width:7%'>Date</td>\n";
+    html +=         "\t\t<td style='width:8%'>+ / -</td>\n";
+    html +=         "\t\t<td style='width:6%'>Type</td>\n";
+    html +=         "\t\t<td style='width:30%'>Description</td>\n";
+    html +=         "\t\t<td style='width:15%'>Référence</td>\n";
+    html +=         "\t\t<td style='width:10%'>Magasin</td>\n";
+    html +=         "\t\t<td style='width:10%'>Catégorie</td>\n";
+    html +=         "\t\t<td style='width:9%'>Reste</td>\n";
     html +=     "\t</tr>\n";
 
-    for (int row = 0; row < tableau_a_imprimer->rowCount(); row ++)
+    for (int row=0; row < tableau_a_imprimer->rowCount(); row++)
     {
         html += "\t<tr>\n";
-        for (int col = 0; col < tableau_a_imprimer->columnCount()-1; col ++)
+        for (int col=0; col < tableau_a_imprimer->columnCount()-2; col++)
         {
-            if(col < 3 || (col > 3 && col < 6) || col ==8)
+            if(col != 3 && col != 6 && col != 7)
             {
                 html += "\t\t<td>"+tableau_a_imprimer->item(row,col)->text().toStdString()+"</td>\n";
             }
             else
             {
-                string value = ((QComboBox*)tableau_a_imprimer->cellWidget(row,col))->currentText().toStdString();
-                if(value=="--- Magasins ---" || value=="--- Catégories ---")
-                    value = "Autres";
-                html += "\t\t<td>"+value+"</td>\n";
+                html += "\t\t<td>"+((QComboBox*)tableau_a_imprimer->cellWidget(row,col))->currentText().toStdString()+"</td>\n";
             }
         }
         html += "\t</tr>\n";
@@ -205,11 +204,14 @@ void view_Comptes::imprimer(QTableWidget * tableau_a_imprimer, QString titre)
 
     html += "<a id='print' href='javascript:document.getElementById(\"print\").style.display=\"none\";window.print();'>Imprimer cette page</a>";
 
-    ofstream fichier("comptes.html", ios::out | ios::trunc);
+    ofstream fichier("C:\\comptes.html", ios::out);
     fichier << html;
     fichier.close();
 
-    QDesktopServices::openUrl(QUrl("comptes.html"));
+    string username = getenv("USERNAME");
+    string path = "C:\\Users\\"+username+"\\AppData\\Local\\VirtualStore\\comptes.html";
+
+    QDesktopServices::openUrl(QUrl::fromLocalFile(path.c_str()));
 }
 
 

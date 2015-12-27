@@ -23,6 +23,7 @@ public:
     static string nb2string(double n);
     static int string2int(string n);
     static double string2double(string s);
+    static bool string2bool(string s);
     static string escapeString(string str);
     static bool checkIsValue(string val);
     static void setTheme(QMainWindow *window, QString no);

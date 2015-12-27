@@ -51,6 +51,7 @@ void DAO::loadSchema()
             MAG INTEGER NOT NULL ,                                  \
             CAT INTEGER NOT NULL ,                                  \
             RESTE DOUBLE,                                           \
+            OPCHECKED INTEGER(1) DEFAULT 0,                         \
             FOREIGN KEY (MAG) REFERENCES MAGASIN(IDMAG),            \
             FOREIGN KEY (CAT) REFERENCES CATEGORIE(IDCAT)           \
         );                                                          \
@@ -244,7 +245,7 @@ Operation DAO::getOperation(string knewColName, string knewValue)
 {
     this->open();
 
-    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE "+knewColName+" LIKE '"+knewValue+"'"+orderBy("IDOP")+";";
+    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE,OPCHECKED FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT WHERE "+knewColName+" LIKE '"+knewValue+"'"+orderBy("IDOP")+";";
     this->execute(rq);
 
     Operation operation;
@@ -259,6 +260,7 @@ Operation DAO::getOperation(string knewColName, string knewValue)
     int id_cat = Utilities::string2int(callback_v[(8)]);
     operation.setCategorie(Categorie(id_cat,callback_v[9]));
     operation.setReste(10);
+    operation.setOpChecked(Utilities::string2bool(callback_v[11]));
 
     this->close();
     return operation;
@@ -332,7 +334,7 @@ vector<Operation> DAO::getAllOperations()
 {
     this->open();
     vector<Operation > result;
-    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT"+orderBy("IDOP")+";";
+    string rq = "SELECT IDOP,DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,IDMAG,NOMMAG,IDCAT,NOMCAT,RESTE,OPCHECKED FROM OPERATION INNER JOIN MAGASIN ON OPERATION.MAG = MAGASIN.IDMAG INNER JOIN CATEGORIE ON OPERATION.CAT = CATEGORIE.IDCAT"+orderBy("IDOP")+";";
     std::cout << rq << std::endl;
 
     this->execute(rq);
@@ -350,6 +352,7 @@ vector<Operation> DAO::getAllOperations()
         int id_cat = Utilities::string2int(callback_v[(i++)]);
         operation.setCategorie(Categorie(id_cat,callback_v[i++]));
         operation.setReste(stod(callback_v[i++]));
+        operation.setOpChecked(Utilities::string2bool(callback_v[i++]));
         result.push_back(operation);
     }
 
@@ -400,7 +403,7 @@ void DAO::insertOperation(string date, string value, string typePmt, string desc
 
     this->open();
 
-    string rq = "INSERT INTO OPERATION (DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,MAG,CAT,RESTE) VALUES ('"+date+"',"+value+",'"+typePmt+"','"+description+"','"+reference+"',"+idmag+","+idcat+","+reste+");";
+    string rq = "INSERT INTO OPERATION (DATEOP,VALEUR,TYPE,DESCRIPTION,REFERENCE,MAG,CAT,RESTE) VALUES ('"+date+"',"+value+",'"+typePmt+"','"+description+"','"+reference+"',"+idmag+","+idcat+","+reste+",0);";
     this->execute(rq);
 
     this->close();

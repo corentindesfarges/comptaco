@@ -55,6 +55,9 @@ public:
     double getReste() const;
     void setReste(double value);
 
+    bool isOpChecked() const;
+    void setOpChecked(const bool check);
+
 private:
     QDate date;
     double reste;
@@ -67,6 +70,7 @@ protected:
     string reference;
     Magasin magasin;
     Categorie categorie;
+    bool opChecked;
 
 };
 

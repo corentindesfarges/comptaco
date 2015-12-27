@@ -43,6 +43,8 @@ private slots:
 
     void currentIndexChanged(int idx);
 
+    void checkboxChanged(int idx);
+
     void navig();
 
     void clicked_del();

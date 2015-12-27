@@ -226,16 +226,17 @@ void view_Comptes::resizeWindow()
 {
     int w = this->width()-300;
 
-    ui->tableWidget->setColumnWidth(0,Utilities::toPercent(w,5));
-    ui->tableWidget->setColumnWidth(1,Utilities::toPercent(w,8));
-    ui->tableWidget->setColumnWidth(2,Utilities::toPercent(w,6));
-    ui->tableWidget->setColumnWidth(3,Utilities::toPercent(w,7));
-    ui->tableWidget->setColumnWidth(4,Utilities::toPercent(w,20));
-    ui->tableWidget->setColumnWidth(5,Utilities::toPercent(w,16));
-    ui->tableWidget->setColumnWidth(6,Utilities::toPercent(w,14));
+    ui->tableWidget->setColumnWidth(0,Utilities::toPercent(w,3));
+    ui->tableWidget->setColumnWidth(1,Utilities::toPercent(w,5));
+    ui->tableWidget->setColumnWidth(2,Utilities::toPercent(w,7));
+    ui->tableWidget->setColumnWidth(3,Utilities::toPercent(w,6));
+    ui->tableWidget->setColumnWidth(4,Utilities::toPercent(w,7));
+    ui->tableWidget->setColumnWidth(5,Utilities::toPercent(w,20));
+    ui->tableWidget->setColumnWidth(6,Utilities::toPercent(w,15));
     ui->tableWidget->setColumnWidth(7,Utilities::toPercent(w,14));
-    ui->tableWidget->setColumnWidth(8,Utilities::toPercent(w,7));
-    ui->tableWidget->setColumnWidth(9,Utilities::toPercent(w,3));
+    ui->tableWidget->setColumnWidth(8,Utilities::toPercent(w,14));
+    ui->tableWidget->setColumnWidth(9,Utilities::toPercent(w,6));
+    ui->tableWidget->setColumnWidth(10,Utilities::toPercent(w,3));
 }
 
 
@@ -248,16 +249,17 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
 
     resizeWindow();
 
-    ui->tableWidget->setHorizontalHeaderItem(0,new QTableWidgetItem("ID"));
-    ui->tableWidget->setHorizontalHeaderItem(1,new QTableWidgetItem("Date"));
-    ui->tableWidget->setHorizontalHeaderItem(2,new QTableWidgetItem("+ / -"));
-    ui->tableWidget->setHorizontalHeaderItem(3,new QTableWidgetItem("Type"));
-    ui->tableWidget->setHorizontalHeaderItem(4,new QTableWidgetItem("Description"));
-    ui->tableWidget->setHorizontalHeaderItem(5,new QTableWidgetItem("Référence"));
-    ui->tableWidget->setHorizontalHeaderItem(6,new QTableWidgetItem("Magasin"));
-    ui->tableWidget->setHorizontalHeaderItem(7,new QTableWidgetItem("Catégorie"));
-    ui->tableWidget->setHorizontalHeaderItem(8,new QTableWidgetItem("Reste"));
-    ui->tableWidget->setHorizontalHeaderItem(9,new QTableWidgetItem(""));
+    ui->tableWidget->setHorizontalHeaderItem(0,new QTableWidgetItem(""));
+    ui->tableWidget->setHorizontalHeaderItem(1,new QTableWidgetItem("ID"));
+    ui->tableWidget->setHorizontalHeaderItem(2,new QTableWidgetItem("Date"));
+    ui->tableWidget->setHorizontalHeaderItem(3,new QTableWidgetItem("+ / -"));
+    ui->tableWidget->setHorizontalHeaderItem(4,new QTableWidgetItem("Type"));
+    ui->tableWidget->setHorizontalHeaderItem(5,new QTableWidgetItem("Description"));
+    ui->tableWidget->setHorizontalHeaderItem(6,new QTableWidgetItem("Référence"));
+    ui->tableWidget->setHorizontalHeaderItem(7,new QTableWidgetItem("Magasin"));
+    ui->tableWidget->setHorizontalHeaderItem(8,new QTableWidgetItem("Catégorie"));
+    ui->tableWidget->setHorizontalHeaderItem(9,new QTableWidgetItem("Reste"));
+    ui->tableWidget->setHorizontalHeaderItem(10,new QTableWidgetItem(""));
 
     ui->tableWidget->setRowCount(operations.size());
 
@@ -272,6 +274,7 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
         list_type->addItem("Chèque");
         list_type->addItem("Espèce");
         list_type->addItem("Virement");
+        list_type->addItem("Prélèvement");
         list_type->addItem("Autre");
 
         QPushButton *del = new QPushButton("X");
@@ -324,21 +327,29 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
         {
             idxType = 3;
         }
-        else if(operation.getTypePmt()=="Autre")
+        else if(operation.getTypePmt()=="Prélèvement")
         {
             idxType = 4;
         }
+        else if(operation.getTypePmt()=="Autre")
+        {
+            idxType = 5;
+        }
 
-        ui->tableWidget->setItem(no_line,0,new QTableWidgetItem(QString::number(operation.getId())));
-        ui->tableWidget->setItem(no_line,1,new QTableWidgetItem(operation.getDate().toString("dd/MM/yyyy")));
-        ui->tableWidget->setItem(no_line,2,new QTableWidgetItem(QString::number(operation.getValue())));
-        ui->tableWidget->setCellWidget(no_line,3,list_type);
-        ui->tableWidget->setItem(no_line,4,new QTableWidgetItem((QString::fromStdString(operation.getDescription()))));
-        ui->tableWidget->setItem(no_line,5,new QTableWidgetItem(QString::fromStdString(operation.getReference())));
-        ui->tableWidget->setCellWidget(no_line,6,list_mag);
-        ui->tableWidget->setCellWidget(no_line,7,list_cat);
-        ui->tableWidget->setItem(no_line,8,new QTableWidgetItem(QString::number(operation.getReste())));
-        ui->tableWidget->setCellWidget(no_line,9,del);
+        QCheckBox * checkbox_opChecked = new QCheckBox();
+        checkbox_opChecked->setChecked(operation.isOpChecked());
+
+        ui->tableWidget->setCellWidget(no_line,0,checkbox_opChecked);
+        ui->tableWidget->setItem(no_line,1,new QTableWidgetItem(QString::number(operation.getId())));
+        ui->tableWidget->setItem(no_line,2,new QTableWidgetItem(operation.getDate().toString("dd/MM/yyyy")));
+        ui->tableWidget->setItem(no_line,3,new QTableWidgetItem(QString::number(operation.getValue())));
+        ui->tableWidget->setCellWidget(no_line,4,list_type);
+        ui->tableWidget->setItem(no_line,5,new QTableWidgetItem((QString::fromStdString(operation.getDescription()))));
+        ui->tableWidget->setItem(no_line,6,new QTableWidgetItem(QString::fromStdString(operation.getReference())));
+        ui->tableWidget->setCellWidget(no_line,7,list_mag);
+        ui->tableWidget->setCellWidget(no_line,8,list_cat);
+        ui->tableWidget->setItem(no_line,9,new QTableWidgetItem(QString::number(operation.getReste())));
+        ui->tableWidget->setCellWidget(no_line,10,del);
 
         list_type->setCurrentIndex(idxType);
         list_mag->setCurrentIndex(idxMag);
@@ -347,13 +358,16 @@ void view_Comptes::remplirTableau(vector<Operation> operations)
         QString stype = "TYPE_"+QString::number(operation.getId());
         QString smag = "MAG_"+QString::number(operation.getId());
         QString scat = "CAT_"+QString::number(operation.getId());
+        QString scheck = "OPCHECKED_"+QString::number(operation.getId());
         list_type->setObjectName(stype);
         list_cat->setObjectName(scat);
         list_mag->setObjectName(smag);
+        checkbox_opChecked->setObjectName(scheck);
 
         connect(list_type, SIGNAL(currentIndexChanged(int)), this, SLOT( currentIndexChanged(int)));
         connect(list_cat, SIGNAL(currentIndexChanged(int)), this, SLOT( currentIndexChanged(int)));
         connect(list_mag, SIGNAL(currentIndexChanged(int)), this, SLOT( currentIndexChanged(int)));
+        connect(checkbox_opChecked, SIGNAL(stateChanged(int)), this, SLOT( checkboxChanged(int)));
 
         no_line++;
     }
@@ -392,6 +406,25 @@ void view_Comptes::currentIndexChanged(int idx)
 }
 
 
+void view_Comptes::checkboxChanged(int idx)
+{
+    QCheckBox *chbx = (QCheckBox*)sender();
+
+    string s = sender()->objectName().toStdString();
+    vector<string> sp = Utilities::split(s,'_');
+
+    string id = sp[1];
+    string column = sp[0];
+    string value = "0";
+    if(chbx->isChecked())
+    {
+        value = 1;
+    }
+
+    dao.updateOperation(id, column, value);
+}
+
+
 void view_Comptes::load_options(string newMag, string newCat)
 {
     readyForUpdate=false;
@@ -401,6 +434,7 @@ void view_Comptes::load_options(string newMag, string newCat)
     ui->list_pmt->addItem("Chèque");
     ui->list_pmt->addItem("Espèce");
     ui->list_pmt->addItem("Virement");
+    ui->list_pmt->addItem("Prélèvement");
     ui->list_pmt->addItem("Autre");
 
     ui->list_pmt_2->clear();
@@ -408,6 +442,7 @@ void view_Comptes::load_options(string newMag, string newCat)
     ui->list_pmt_2->addItem("Chèque");
     ui->list_pmt_2->addItem("Espèce");
     ui->list_pmt_2->addItem("Virement");
+    ui->list_pmt_2->addItem("Prélèvement");
     ui->list_pmt_2->addItem("Autre");
 
     vector<Favori> favoris= dao.getAllFavoris();
@@ -539,27 +574,27 @@ void view_Comptes::on_tableWidget_cellChanged(int row, int column)
 {
     if(!mod_rest && readyForUpdate)
     {
-        string id = ui->tableWidget->item(row,0)->text().toStdString();
+        string id = ui->tableWidget->item(row,1)->text().toStdString();
         string newval = ui->tableWidget->item(row,column)->text().toStdString();
         double diff;
         QDate date;
 
         switch(column)
         {
-        case 1:
+        case 2:
             date = QDate::fromString(newval.c_str(),"dd/MM/yyyy");
             if(date.isValid())
                 dao.updateOperation(id,"DATEOP",date.toString("yyyy-MM-dd").toStdString());
             break;
-        case 2:
+        case 3:
             diff = dao.getOperation("IDOP",id).getValue()-Utilities::string2double(newval);
             dao.updateOperation(id,"VALEUR",newval);
             maj_restes(id,Utilities::nb2string(diff));
             update();
             break;
-        case 4: dao.updateOperation(id,"DESCRIPTION",newval);
+        case 5: dao.updateOperation(id,"DESCRIPTION",newval);
             break;
-        case 5: dao.updateOperation(id,"REFERENCE",newval);
+        case 6: dao.updateOperation(id,"REFERENCE",newval);
             break;
         }
     }

@@ -40,6 +40,18 @@ int Utilities::string2int(string s)
     return res;
 }
 
+bool Utilities::string2bool(string s)
+{
+    if(s == "0")
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
 double Utilities::string2double(string s)
 {
     return std::stod(s);

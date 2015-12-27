@@ -113,12 +113,12 @@ void Operation::setReste(double value)
     reste = value;
 }
 
+void Operation::setOpChecked(const bool check)
+{
+    opChecked = check;
+}
 
-
-
-
-
-
-
-
-
+bool Operation::isOpChecked() const
+{
+    return opChecked;
+}
